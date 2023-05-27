@@ -1,0 +1,10 @@
+plugins:
+  - artifactId: git
+    source:
+      version: 5.0.2
+  - artifactId: pipeline-utility-steps
+    source:
+      version: 2.15.3
+  - artifactId: ldap
+    source:
+      version: latest
