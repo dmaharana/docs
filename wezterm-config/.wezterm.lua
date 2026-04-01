@@ -1,5 +1,6 @@
 local wezterm = require("wezterm")
 local config = wezterm.config_builder()
+local act = wezterm.action
 
 -- General configuration
 config.font_size = 14
@@ -17,9 +18,9 @@ config.colors = {
 
 config.enable_tab_bar = true
 config.initial_rows = 20
-config.initial_cols = 170
+config.initial_cols = 175
 
-config.window_decorations = "RESIZE"
+config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.window_padding = {
 	left = 0,
 	right = 0,
@@ -30,11 +31,25 @@ config.window_frame = {
 	active_titlebar_bg = "#1e1e2e",
 	inactive_titlebar_bg = "#1e1e2e",
 }
-
+-- right click to paste from clipboard
+config.mouse_bindings = {
+	{
+		event = { Down = { streak = 1, button = "Right" } },
+		mods = "NONE",
+		action = wezterm.action_callback(function(window, pane)
+			local has_selection = window:get_selection_text_for_pane(pane) ~= ""
+			if has_selection then
+				window:perform_action(act.CopyTo("ClipboardAndPrimarySelection"), pane)
+				window:perform_action(act.ClearSelection, pane)
+			else
+				window:perform_action(act({ PasteFrom = "Clipboard" }), pane)
+			end
+		end),
+	},
+}
 
 -- key bindings
 config.keys = {
-
 	{
 		key = "d",
 		mods = "ALT",
